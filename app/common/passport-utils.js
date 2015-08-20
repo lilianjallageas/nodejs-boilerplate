@@ -50,10 +50,10 @@ exports.auth = function(userGroup){
 		function(req, res, next) {
 			// Checking if the 'user' found in the 'Basic' strategy belongs to the required group.
 			if (req.user && (-1 != _.indexOf(req.user.groups, userGroup))) {
-				console.log('#passport.authenticate: The user belows to the required group ('+userGroup+')');
+				console.log('#passport.authenticate: The user belongs to the required group ('+userGroup+')');
 				next();
 			} else {
-				console.log('#passport.authenticate: The user doesnt below to the required group');
+				console.log('#passport.authenticate: The user doesnt belong to the required group');
 				res.status(httpStatus.UNAUTHORIZED).send({error: msg.user.ERROR.UNAUTHORIZED});
 			}
 		}

@@ -29,21 +29,24 @@ var addUser = function(req,res){
 
 		// Checking if the user already exists
 		userModel.findOne({'email': email}, function (err, userExist) {
-			if (err) res.status(httpStatus.BAD_REQUEST).send({error: msg.req.ERROR.BAD_REQUEST});
-			if (userExist) {
-				res.status(httpStatus.FORBIDDEN).send({error: msg.user.ERROR.ALREADY_EXISTS});
+			if (err) {
+				res.status(httpStatus.BAD_REQUEST).send({error: msg.req.ERROR.BAD_REQUEST});
 			} else {
-				// If the user doesn't already exist, we create it...
-				var user        = new userModel();
-				user._id        = mongoose.Types.ObjectId();
-				user.email      = email;
-				user.password   = password;
-				// ...and save it in the database
-				user.save(function(err) {
-					if (err){ res.send(err) };
-					// Returning the user in the response
-					res.json(_.omit(user.toObject(),'password'));
-				});
+				if (userExist) {
+					res.status(httpStatus.FORBIDDEN).send({error: msg.user.ERROR.ALREADY_EXISTS});
+				} else {
+					// If the user doesn't already exist, we create it...
+					var user        = new userModel();
+					user._id        = mongoose.Types.ObjectId();
+					user.email      = email;
+					user.password   = password;
+					// ...and save it in the database
+					user.save(function(err) {
+						if (err){ res.send(err) };
+						// Returning the user in the response
+						res.json(_.omit(user.toObject(),'password'));
+					});
+				}
 			}
 		});
 	});	
@@ -102,15 +105,17 @@ var getById = function(req, res){
 
 	// Finding the user in the database
 	userModel.findById(id, function (err, user) {
-		if (err) res.status(httpStatus.BAD_REQUEST).send({error: msg.req.ERROR.BAD_REQUEST});
-		if (user) {
-			// We found the user, so we return it in the response (without the password)
-			res.json(_.omit(user.toObject(),'password'));
+		if (err) {
+			res.status(httpStatus.BAD_REQUEST).send({error: msg.req.ERROR.BAD_REQUEST});
 		} else {
-			// If no user is found, we return an error message
-			res.status(httpStatus.NOT_FOUND).send({error: msg.user.ERROR.NOT_FOUND});
-		};
-
+			if (user) {
+				// We found the user, so we return it in the response (without the password)
+				res.json(_.omit(user.toObject(),'password'));
+			} else {
+				// If no user is found, we return an error message
+				res.status(httpStatus.NOT_FOUND).send({error: msg.user.ERROR.NOT_FOUND});
+			};
+		}
 	});
 };
 
