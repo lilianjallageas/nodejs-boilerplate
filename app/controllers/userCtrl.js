@@ -29,8 +29,7 @@ var addUser = function(req,res){
 
 		// Checking if the user already exists
 		userModel.findOne({'email': email}, function (err, userExist) {
-			// TODO : Manage the error
-			// if (err) return handleError(err);
+			if (err) res.status(httpStatus.BAD_REQUEST).send({error: msg.req.ERROR.BAD_REQUEST});
 			if (userExist) {
 				res.status(httpStatus.FORBIDDEN).send({error: msg.user.ERROR.ALREADY_EXISTS});
 			} else {
@@ -103,16 +102,15 @@ var getById = function(req, res){
 
 	// Finding the user in the database
 	userModel.findById(id, function (err, user) {
-		// If no 'user' is found, an error is sent, so we execute the "callbackFail"
-		if (err) {
+		if (err) res.status(httpStatus.BAD_REQUEST).send({error: msg.req.ERROR.BAD_REQUEST});
+		if (user) {
+			// We found the user, so we return it in the response (without the password)
+			res.json(_.omit(user.toObject(),'password'));
+		} else {
 			// If no user is found, we return an error message
 			res.status(httpStatus.NOT_FOUND).send({error: msg.user.ERROR.NOT_FOUND});
-		} else {
-			// If no error, then we execute the "callbackSuccessful"
-			console.log("#getById: id="+id);
-			// We found the user, so we return it in the response
-			res.json(_.omit(user.toObject(),'password')); // returning the user to the client side, without the password
 		};
+
 	});
 };
 

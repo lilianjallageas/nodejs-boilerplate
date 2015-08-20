@@ -185,6 +185,7 @@ describe("Testing '/users' routes", function() {
 				done();
 		});
 	});
+
 	it('GET /users/:id/profile: should not be able to get the profile of a user, if the requester is not authenticated', function(done) {
 		request
 			.get(config.app.url.api+'/users/54331aab6a1f1d538eaaacde/profile')
@@ -195,6 +196,35 @@ describe("Testing '/users' routes", function() {
 				done();
 		});
 	});
+
+	it('GET /users/:id/profile: should return an error if the user id does not exist in the db', function(done) {
+		request
+			.get(config.app.url.api+'/users/54331aab6a1f1d538eaaacdf/profile')
+			.auth(user_email_fixt_1, user_pwd_fixt_1)
+			.end(function(err, res) {
+				if (err) { throw err; done(); }
+				// Validations
+				res.status.should.equal(httpStatus.NOT_FOUND);
+				res.body.should.be.an.Object;
+				res.body.error.should.be.equal(msg.user.ERROR.NOT_FOUND);
+				done();
+		});
+	});
+
+	it('GET /users/:id/profile: should return an error if the user id is not a valid MongoDB id', function(done) {
+		request
+			.get(config.app.url.api+'/users/12345/profile')
+			.auth(user_email_fixt_1, user_pwd_fixt_1)
+			.end(function(err, res) {
+				if (err) { throw err; done(); }
+				// Validations
+				res.status.should.equal(httpStatus.BAD_REQUEST);
+				res.body.should.be.an.Object;
+				res.body.error.should.be.equal(msg.req.ERROR.BAD_REQUEST);
+				done();
+		});
+	});
+
 
 	// After ---------------------------------------------
 	after(function() {

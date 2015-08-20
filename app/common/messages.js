@@ -15,7 +15,8 @@ module.exports = {
 	},
 	"req": {
 		"ERROR": {
-			"MISSING_PARAM": "There is a missing parameter in the request"
+			"MISSING_PARAM": "There is a missing parameter in the request",
+			"BAD_REQUEST": "Bad Request"
 		}
 	}
 };

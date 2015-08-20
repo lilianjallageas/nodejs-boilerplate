@@ -15,8 +15,8 @@ exports.app = {
 exports.mongodb = {
 	host: 'localhost',
 	port: '27017',
-	dbname: 'omo_dev',
-	dburl: 'mongodb://localhost:27017/omo_dev'
+	dbname: 'boilerplate_db',
+	dburl: 'mongodb://localhost:27017/boilerplate_db'
 }
 
 // smtp ----------------------------------------------
