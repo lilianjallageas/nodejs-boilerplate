@@ -69,8 +69,8 @@ var validateUser = function(req,res){
 			email, 
 			password, 
 			function(user){
-				// We found the user, so we return it in the response
-				res.json(_.omit(user,'password')); // returning the user to the client side, without the password
+				// We found the user, so we return it in the response (without the password)
+				res.json(_.omit(user,'password'));
 			}, 
 			function(){
 				// If no user is found (or more than one), we return an error message
